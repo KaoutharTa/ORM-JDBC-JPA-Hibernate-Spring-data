@@ -1,270 +1,3 @@
-
-<h2>Introduction</h2>
-
-<p>Le Système de Gestion Hospitalière comprend plusieurs entités telles que Patient, Médecin, Rendez-vous et Consultation. Ces entités sont interconnectées pour faciliter la gestion des opérations hospitalières.</p>
-
-<h3>Entités :</h3>
-
-<ol>
-    <li><strong>Patient</strong> : Représente un patient visitant l'hôpital. Il inclut des informations telles que le nom, la date de naissance et si le patient est actuellement malade.</li>
-    <li><strong>Médecin</strong> : Représente un médecin travaillant à l'hôpital. Il inclut des informations telles que le nom, l'email et la spécialité.</li>
-    <li><strong>Rendez-vous</strong> : Représente un rendez-vous planifié entre un patient et un médecin. Il inclut la date du rendez-vous et son statut.</li>
-    <li><strong>Consultation</strong> : Représente une session de consultation entre un médecin et un patient. Il inclut la date de la consultation et un rapport de la session.</li>
-</ol>
-
-<h2>Extraits de code et Explications</h2>
-
-<h3>Classes d'Entité</h3>
-
-<h4>Consultation.java</h4>
-
-<pre><code>&lt;Entity&gt;
-&lt;Data @NoArgsConstructor @AllArgsConstructor&gt;
-public class Consultation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Date dateConsultation;
-    private String rapport;
-    @OneToOne
-    private RendezVous rendezVous;
-}
-</code></pre>
-
-<ul>
-    <li>Cette classe représente une entité de consultation.</li>
-    <li>Elle inclut des champs tels que <code>id</code>, <code>dateConsultation</code>, <code>rapport</code>, et une référence au <code>RendezVous</code> associé.</li>
-    <li>Elle est annotée avec <code>@Entity</code>, la spécifiant en tant qu'entité JPA.</li>
-    <li>Utilise des annotations Lombok pour générer les getters, setters, les constructeurs et la méthode <code>toString()</code>.</li>
-</ul>
-
-<h4>Medecin.java</h4>
-
-<pre><code>&lt;Entity&gt;
-&lt;Data @NoArgsConstructor @AllArgsConstructor&gt;
-public class Medecin {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String nom;
-    private String email;
-    private String specialite;
-    @OneToMany(mappedBy = "medecin", fetch = FetchType.LAZY)
-    private Collection&lt;RendezVous&gt; rendezVous;
-}
-</code></pre>
-
-<ul>
-    <li>Cette classe représente une entité de médecin.</li>
-    <li>Elle inclut des champs tels que <code>id</code>, <code>nom</code>, <code>email</code>, <code>specialite</code>, et une collection de <code>RendezVous</code> associés.</li>
-    <li>Elle est annotée avec <code>@Entity</code>, la spécifiant en tant qu'entité JPA.</li>
-    <li>Utilise des annotations Lombok pour générer les getters, setters, les constructeurs et la méthode <code>toString()</code>.</li>
-</ul>
-
-<h4>Patient.java</h4>
-
-<pre><code>&lt;Entity&gt;
-&lt;Data @NoArgsConstructor @AllArgsConstructor&gt;
-public class Patient {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String nom;
-    @Temporal(TemporalType.DATE)
-    private Date dateNaissance;
-    private boolean malade;
-    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
-    private Collection&lt;RendezVous&gt; rendezVous;
-}
-</code></pre>
-
-<ul>
-    <li>Cette classe représente une entité de patient.</li>
-    <li>Elle inclut des champs tels que <code>id</code>, <code>nom</code>, <code>dateNaissance</code>, <code>malade</code>, et une collection de <code>RendezVous</code> associés.</li>
-    <li>Elle est annotée avec <code>@Entity</code>, la spécifiant en tant qu'entité JPA.</li>
-    <li>Utilise des annotations Lombok pour générer les getters, setters, les constructeurs et la méthode <code>toString()</code>.</li>
-</ul>
-
-<h4>RendezVous.java</h4>
-
-<pre><code>&lt;Entity&gt;
-&lt;Data @NoArgsConstructor @AllArgsConstructor&gt;
-public class RendezVous {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Date date;
-    @Enumerated(EnumType.STRING)
-    private StatutRDV statutRDV;
-    @ManyToOne
-    private Patient patient;
-    @ManyToOne
-    private Medecin medecin;
-    @OneToOne(mappedBy = "rendezVous")
-    private Consultation consultation;
-}
-</code></pre>
-
-<ul>
-    <li>Cette classe représente une entité de rendez-vous.</li>
-    <li>Elle inclut des champs tels que <code>id</code>, <code>date</code>, <code>statutRDV</code>, et des références à <code>Patient</code>, <code>Medecin</code>, et <code>Consultation</code> associés.</li>
-    <li>Elle est annotée avec <code>@Entity</code>, la spécifiant en tant qu'entité JPA.</li>
-    <li>Utilise des annotations Lombok pour générer les getters, setters, les constructeurs et la méthode <code>toString()</code>.</li>
-</ul>
-
-<h3>Interfaces de Repository</h3>
-
-<h4>ConsultationRepository.java</h4>
-
-<pre><code>public interface ConsultationRepository extends JpaRepository&lt;Consultation,Long&gt; {
-}
-</code></pre>
-
-<ul>
-    <li>Cette interface fournit les opérations CRUD pour l'entité <code>Consultation</code>.</li>
-</ul>
-
-<h4>MedecinRepository.java</h4>
-
-<pre><code>public interface MedecinRepository extends JpaRepository&lt;Medecin,Long&gt; {
-}
-</code></pre>
-
-<ul>
-    <li>Cette interface fournit les opérations CRUD pour l'entité <code>Medecin</code>.</li>
-</ul>
-
-<h4>PatientRepository.java</h4>
-
-<pre><code>public interface PatientRepository extends JpaRepository&lt;Patient,Long&gt; {
-}
-</code></pre>
-
-<ul>
-    <li>Cette interface fournit les opérations CRUD pour l'entité <code>Patient</code>.</li>
-</ul>
-
-<h4>RendezVousRepository.java</h4>
-
-<pre><code>public interface RendezVousRepository extends JpaRepository&lt;RendezVous,Long&gt; {
-}
-</code></pre>
-
-<ul>
-    <li>Cette interface fournit les opérations CRUD pour l'entité <code>RendezVous</code>.</li>
-</ul>
-
-<h3>Interfaces et Implémentations de Service</h3>
-
-<h4>IHospital.java</h4>
-
-<pre><code>public interface IHospital {
-    Patient savePatient(Patient obj);
-    Consultation saveConsultation(Consultation obj);
-    Medecin saveMedecin(Medecin obj);
-    RendezVous saveRendezVous(RendezVous obj);
-
-    List&lt;Patient&gt; findAll();
-    Optional&lt;Patient&gt; findById(Long id);
-    Patient updatePatient(Patient obj);
-    void deletePatient(Patient obj);
-}
-</code></pre>
-
-<ul>
-    <li>Cette interface déclare des méthodes pour gérer les patients, les consultations, les médecins et les rendez-vous.</li>
-</ul>
-
-<h4>IHospitalImpl.java</h4>
-
-<pre><code>@Service
-@Transactional
-package ma.enset.hospital.service;
-
-import jakarta.transaction.Transactional;
-import ma.enset.hospital.entities.Consultation;
-import ma.enset.hospital.entities.Medecin;
-import ma.enset.hospital.entities.Patient;
-import ma.enset.hospital.entities.RendezVous;
-import ma.enset.hospital.repositories.ConsultationRepository;
-import ma.enset.hospital.repositories.MedecinRepository;
-import ma.enset.hospital.repositories.PatientRepository;
-import ma.enset.hospital.repositories.RendezVousRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-
-@Service
-@Transactional
-public class IHospitalImpl implements IHospital{
-    private PatientRepository patientRepository;
-    private MedecinRepository medecinRepository;
-    private ConsultationRepository consultationRepository;
-    private RendezVousRepository rendezVousRepository;
-
-    public IHospitalImpl(PatientRepository patientRepository, MedecinRepository medecinRepository, ConsultationRepository consultationRepository, RendezVousRepository rendezVousRepository) {
-        this.patientRepository = patientRepository;
-        this.medecinRepository = medecinRepository;
-        this.consultationRepository = consultationRepository;
-        this.rendezVousRepository = rendezVousRepository;
-    }
-
-    @Override
-    public Patient savePatient(Patient obj) {
-        return patientRepository.save(obj);
-    }
-
-    @Override
-    public Consultation saveConsultation(Consultation obj) {
-        return consultationRepository.save(obj);
-    }
-
-    @Override
-    public Medecin saveMedecin(Medecin obj) {
-        return medecinRepository.save(obj);
-    }
-
-    @Override
-    public RendezVous saveRendezVous(RendezVous obj) {
-        return rendezVousRepository.save(obj);
-    }
-
-    @Override
-    public List<Patient> findAll() {
-        return patientRepository.findAll();
-    }
-
-    @Override
-    public Optional<Patient> findById(Long id) {
-        return patientRepository.findById(id);
-    }
-
-    @Override
-    public Patient updatePatient(Patient obj) {
-        return patientRepository.saveAndFlush(obj);
-    }
-
-    @Override
-    public void deletePatient(Patient obj) {
-        patientRepository.delete(obj);
-    }
-}
-
-</code></pre>
-
-<ul>
-    <li>Cette classe implémente l'interface <code>IHospital</code> en fournissant l'implémentation pour gérer les opérations hospitalières.</li>
-    <li>Utilise l'annotation Spring <code>@Service</code> pour la déclarer en tant que classe de service.</li>
-    <li>Utilise l'annotation Spring <code>@Transactional</code> pour activer la gestion des transactions.</li>
-    <li>Injecte automatiquement les repositories pour accéder aux données.</li>
-</ul>
-
-<h2>Conclusion</h2>
-
-<p>Le Système de Gestion Hospitalière fournit une solution robuste pour gérer les patients, les médecins, les rendez-vous et les consultations au sein d'un environnement hospitalier. Avec sa conception d'entités structurée et ses implémentations de repository et de service, il offre une évolutivité et une maintenabilité pour les administrateurs et le personnel hospitalier.</p>
-
-Got it! Here's the rewritten version:
-
 # Hospital Management System
 
 ## Introduction
@@ -290,3 +23,77 @@ This repository contains a Hospital Management System developed using Java and S
 public class Consultation {
     // Entity fields...
 }
+```
+#### Doctor.java
+```java
+@Entity
+@Data @NoArgsConstructor @AllArgsConstructor
+public class Doctor {
+    // Entity fields...
+}
+```
+#### Patient.java
+```java
+@Entity
+@Data @NoArgsConstructor @AllArgsConstructor
+public class Patient {
+    // Entity fields...
+}
+```
+#### RendezVous.java
+```java
+@Entity
+@Data @NoArgsConstructor @AllArgsConstructor
+public class RendezVous {
+    // Entity fields...
+}
+```
+###Repository Interfaces
+
+<p>The repository part of this Hospital Management System comprises interfaces that extend the JpaRepository interface provided by Spring Data JPA. These interfaces, including ConsultationRepository, MedecinRepository, PatientRepository, and RendezVousRepository, define methods for performing CRUD (Create, Read, Update, Delete) operations on the corresponding entity classes. By extending JpaRepository, these interfaces inherit methods like save(), findById(), findAll(), delete(), etc., enabling convenient data access and manipulation.</p>
+
+#### ConsultationRepository.java
+```java
+public interface ConsultationRepository extends JpaRepository<Consultation, Long> {
+    // Repository methods...
+}
+```
+#### DoctorRepository.java
+```java
+public interface DoctorRepository extends JpaRepository<Doctor, Long> {
+    // Repository methods...
+}
+```
+#### PatientRepository.java
+```java
+public interface PatientRepository extends JpaRepository<Patient, Long> {
+    // Repository methods...
+}
+```
+#### RendezVousRepository.java
+```java
+public interface RendezVousRepository extends JpaRepository<RendezVous, Long> {
+    // Repository methods...
+}
+```
+### Service Interfaces and Implementations
+<p>
+    On the other hand, the service interfaces and implementations form the core business logic of the system. The IHospital interface declares methods for managing patients, consultations, doctors, and appointments. These methods include savePatient(), saveConsultation(), saveMedecin(), saveRendezVous(), findAll(), findById(), updatePatient(), and deletePatient(). The IHospitalImpl class implements this interface, providing concrete implementations for these methods. It uses the Spring @Service annotation to denote it as a service class, enabling it to be automatically detected and managed by the Spring container. Inside IHospitalImpl, the repositories required for data access are injected using constructor-based dependency injection. Each method in this class corresponds to a specific operation, such as saving or retrieving entities, and it delegates the actual data access tasks to the corresponding repository methods. Additionally, the @Transactional annotation ensures that each method runs within a transactional context, providing consistency and atomicity for database operations. Overall, these service interfaces and implementations encapsulate the business logic and data access operations of the Hospital Management System, promoting modularity, maintainability, and testability.
+</p>
+
+####IHospital.java
+```java
+public interface IHospital {
+    // Service methods...
+}
+```
+#### IHospitalImpl.java
+```java
+@Service
+@Transactional
+public class IHospitalImpl implements IHospital {
+    // Service implementation...
+}
+```
+## Conclusion
+The Hospital Management System provides a robust solution for managing patients, doctors, appointments, and consultations within a hospital environment. With structured entity design and repository/service implementations, it offers scalability and maintainability for hospital administrators and staff.
