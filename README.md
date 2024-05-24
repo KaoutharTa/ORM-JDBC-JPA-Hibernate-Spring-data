@@ -1,6 +1,3 @@
-<h1>Système de Gestion Hospitalière</h1>
-
-<p>Ce dépôt contient un Système de Gestion Hospitalière développé en Java et Spring Boot. Il fournit des fonctionnalités pour gérer les patients, les médecins, les rendez-vous et les consultations au sein d'un hôpital.</p>
 
 <h2>Introduction</h2>
 
@@ -265,3 +262,31 @@ public class IHospitalImpl implements IHospital{
 <h2>Conclusion</h2>
 
 <p>Le Système de Gestion Hospitalière fournit une solution robuste pour gérer les patients, les médecins, les rendez-vous et les consultations au sein d'un environnement hospitalier. Avec sa conception d'entités structurée et ses implémentations de repository et de service, il offre une évolutivité et une maintenabilité pour les administrateurs et le personnel hospitalier.</p>
+
+Got it! Here's the rewritten version:
+
+# Hospital Management System
+
+## Introduction
+
+This repository contains a Hospital Management System developed using Java and Spring Boot. It provides functionalities to manage patients, doctors, appointments, and consultations within a hospital.
+
+### Entities:
+
+1. **Patient**: Represents individuals visiting the hospital. Includes information such as name, date of birth, and current health status.
+2. **Doctor**: Represents medical professionals working at the hospital. Includes information such as name, email, and specialty.
+3. **Appointment**: Represents scheduled meetings between patients and doctors. Includes appointment dates and statuses.
+4. **Consultation**: Represents sessions where doctors consult with patients. Includes consultation dates and session reports.
+
+## Code Snippets and Explanations
+
+### Entity Classes
+
+#### Consultation.java
+
+```java
+@Entity
+@Data @NoArgsConstructor @AllArgsConstructor
+public class Consultation {
+    // Entity fields...
+}
